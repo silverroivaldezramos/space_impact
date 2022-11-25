@@ -63,9 +63,6 @@ let enemies = [];
 let bullets = [];
 let enemy_bullets = [];
 let score = 0;
-let bullet_type = ["bullet_id", "enemy_id"];
-let bullet_array = ["bullets", "enemy_bullets"];
-let bullet_element_layer = ["bullets", "enemy_bullets"];
 let GAME_HEIGHT =  768;
 let GAME_WIDTH =  1024;
 let SPACESHIP_SPEED = 20;
@@ -88,8 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
 /** EVENT HANDLERS: */
 
 function gameLoop(){
-    moveSpaceshipBullets();
-    moveEnemyBullets();
+    // moveSpaceshipBullets();
+    // moveEnemyBullets();
     // moveEnemies();
     spaceshipBulletEnemyCollision();
     // spaceshipBulletEnemyBulletCollision();
@@ -97,10 +94,11 @@ function gameLoop(){
     spaceshipEnemyBulletCollision();
     displaySpaceship( );
     displayEnemies();
-    displaySpaceshipBullets();
-    displayEnemyBullets();
-    // displayBullets(bullet_type[0], bullet_array[0], bullet_element_layer[0]);
-    // /* spaceship bullets */ expectedFunction(bullet_type, direction, element_layer);
+    // displaySpaceshipBullets();
+    // displayEnemyBullets();
+    displayBullets("bullets", "right", "bullets");
+    displayBullets("enemy_bullets", "left", "enemy_bullets");
+    // /* spaceship bullets */ expectedFunction(bullets_array, direction, element_layer);
     // /* enemy bullets */ expectedFunction(bullet_type, direction, element_layer);
     displayScore();
 
@@ -181,41 +179,71 @@ function displayEnemies(){
     document.getElementById("enemies").innerHTML = output;
 }
 
-// function displayBullets(bullet_type, array, element_layer){
+function displayBullets(bullet_array, direction, element_layer){
+    let output = "";
+    document.getElementById(element_layer).innerHTML = "";
+    // for(bullet_id = 0; bullet_id < bullet_array.length; bullet_id++){
+    //     // console.log(bullets_array);
+    //     output += `<div class='${ element_layer }' style='top: ${ bullet_array[bullet_id].y }px; left: ${ bullet_array[bullet_id].x }px;'></div>`;
+    //     if(direction === 'right'){
+    //         bullet_array[bullet_id].x += BULLET_MOVE_SPEED;
+    //     }
+    //     else{
+    //         bullet_array[bullet_id].x -= BULLET_MOVE_SPEED;
+    //     }
+    // }
+    if(bullet_array === 'bullets'){
+        for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
+            // console.log(bullets_array);
+            output += `<div class='${ element_layer }' style='top: ${ bullets[bullet_id].y }px; left: ${ bullets[bullet_id].x }px;'></div>`;
+            if(direction === 'right'){
+                bullets[bullet_id].x += BULLET_MOVE_SPEED;
+            }
+            if(bullets[bullet_id].x > 988){ 
+                // bullets[bullet_id] = bullets[bullets.length-1];
+                // bullets.pop();
+                bullets.shift();
+            }
+        }
+    }
+    else{
+        for(bullet_id = 0; bullet_id < enemy_bullets.length; bullet_id++){
+            // console.log(bullets_array);
+            output += `<div class='${ element_layer }' style='top: ${ enemy_bullets[bullet_id].y }px; left: ${ enemy_bullets[bullet_id].x }px;'></div>`;
+            if(direction === 'left'){
+                enemy_bullets[bullet_id].x -= BULLET_MOVE_SPEED;
+            }
+            if(enemy_bullets[bullet_id].x < -10){
+                enemy_bullets[bullet_id] = enemy_bullets[enemy_bullets.length-1];
+                enemy_bullets.pop();
+                // enemy_bullets.shift();
+            }
+        }
+    }
+    document.getElementById(element_layer).innerHTML = output;
+}
+
+// function displaySpaceshipBullets(){
 //     let output = "";
-//     document.getElementById(element_layer).innerHTML = "";
-    
-//     for(bullet_type = 0; bullet_type < array.length; bullet_type++){
-//         output += `<div class='${ element_layer }' style='top: ${ array[`${ bullet_type }`].y }px; left: ${ array[bullet_type].x }px;'></div>`;
-//         console.log(array[bullet_type]);
+//     document.getElementById("bullets").innerHTML = "";
+
+//     for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
+//         output += `<div class='bullets' style='top: ${ bullets[bullet_id].y }px; left: ${ bullets[bullet_id].x }px;'></div>`;
 //     }
 
-//     document.getElementById(element_layer).innerHTML = output;
-
-//     console.log(bullets);
+//     document.getElementById("bullets").innerHTML = output;
 // }
 
-function displaySpaceshipBullets(){
-    let output = "";
-    document.getElementById("bullets").innerHTML = "";
+// function displayEnemyBullets(){
+//     let output = "";
+//     document.getElementById("enemy_bullets").innerHTML = "";
 
-    for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
-        output += `<div class='bullets' style='top: ${ bullets[bullet_id].y }px; left: ${ bullets[bullet_id].x }px;'></div>`;
-    }
-
-    document.getElementById("bullets").innerHTML = output;
-}
-
-function displayEnemyBullets(){
-    let output = "";
-    document.getElementById("enemy_bullets").innerHTML = "";
-
-    for(let enemy_bullet_id = 0; enemy_bullet_id < enemy_bullets.length; enemy_bullet_id++){
-        output += `<div class='enemy_bullets' style='top: ${ enemy_bullets[enemy_bullet_id].y }px; left: ${ enemy_bullets[enemy_bullet_id].x }px;'></div>`;
-    }
+//     for(let enemy_bullet_id = 0; enemy_bullet_id < enemy_bullets.length; enemy_bullet_id++){
+//         output += `<div class='enemy_bullets' style='top: ${ enemy_bullets[enemy_bullet_id].y }px; left: ${ enemy_bullets[enemy_bullet_id].x }px;'></div>`;
+//     }
     
-    document.getElementById("enemy_bullets").innerHTML = output;
-}
+//     document.getElementById("enemy_bullets").innerHTML = output;
+// }
 
 function displayScore(){
     document.getElementById('score').innerHTML = score;
@@ -253,7 +281,7 @@ function spaceshipBulletEnemyCollision(){
                 bullets[bullet_id] = bullets[bullets.length-1];
                 bullets.pop();
                   
-                 if (enemies[enemy_id].health === 0){
+                if (enemies[enemy_id].health === 0){
                     score += enemies[enemy_id].earn_score;
                     enemies[enemy_id] = enemies[enemies.length-1];
                     enemies.pop(); 
