@@ -1,0 +1,82 @@
+*{
+
+    body{
+        background-image: url("../image/space_bg.png");
+        background-repeat: no-repeat;
+        background-size: 1024px 768px;
+        position: relative;
+
+        section{
+            #spaceship{
+                background: url("../image/spaceship_sprite.png");
+                background-position: 0px -140px;
+                position:absolute;
+                left: 10px;
+                top: 280px;
+                width: 65px;
+                height: 40px;
+            }
+
+            .bullets{
+                background: url("../image/bullets_sprite.png");
+                background-position: 0px 0px;
+                position: absolute; 
+                width: 30px;
+                height: 30px;
+                left: 70px;
+                top: 282px;
+            }
+
+            .enemy_bullets{
+                background: url("../image/bullets_sprite.png");
+                background-position: 0px 0px;
+                position: absolute; 
+                width: 30px;
+                height: 30px;
+            }
+
+            .drone{
+                background: url("../image/spaceship_sprite.png");
+                background-position: 0px -845px;
+                position:absolute;
+                left: 1000px;
+                top: 00px;
+                width: 65px;
+                height: 40px;
+            }
+
+            #lives{
+                position: absolute; 
+                width: 30px;
+                height: 30px;
+                left: 0px;
+                top: 750px;
+
+                ul{
+                    display: flex;
+                    flex-direction: row;
+                    list-style: none;
+                    padding: 0px;
+
+                    li{
+                        margin-right: 10px;
+
+                        img{
+                            width: 30px;
+                        }
+                    }
+                }
+            }
+
+            #score{
+                position: absolute; 
+                left: 0px;
+                top: 810px;
+            }
+
+            .hidden{
+                display: none;
+            }
+        }
+    }
+}

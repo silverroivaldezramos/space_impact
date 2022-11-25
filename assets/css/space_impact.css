@@ -1,0 +1,78 @@
+/* line 3, space_impact.less */
+* body {
+  background-image: url("../image/space_bg.png");
+  background-repeat: no-repeat;
+  background-size: 1024px 768px;
+  position: relative;
+}
+/* line 10, space_impact.less */
+* body section #spaceship {
+  background: url("../image/spaceship_sprite.png");
+  background-position: 0px -140px;
+  position: absolute;
+  left: 10px;
+  top: 280px;
+  width: 65px;
+  height: 40px;
+}
+/* line 20, space_impact.less */
+* body section .bullets {
+  background: url("../image/bullets_sprite.png");
+  background-position: 0px 0px;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 70px;
+  top: 282px;
+}
+/* line 30, space_impact.less */
+* body section .enemy_bullets {
+  background: url("../image/bullets_sprite.png");
+  background-position: 0px 0px;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+}
+/* line 38, space_impact.less */
+* body section .drone {
+  background: url("../image/spaceship_sprite.png");
+  background-position: 0px -845px;
+  position: absolute;
+  left: 1000px;
+  top: 00px;
+  width: 65px;
+  height: 40px;
+}
+/* line 48, space_impact.less */
+* body section #lives {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 0px;
+  top: 750px;
+}
+/* line 55, space_impact.less */
+* body section #lives ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  padding: 0px;
+}
+/* line 61, space_impact.less */
+* body section #lives ul li {
+  margin-right: 10px;
+}
+/* line 64, space_impact.less */
+* body section #lives ul li img {
+  width: 30px;
+}
+/* line 71, space_impact.less */
+* body section #score {
+  position: absolute;
+  left: 0px;
+  top: 810px;
+}
+/* line 77, space_impact.less */
+* body section .hidden {
+  display: none;
+}
