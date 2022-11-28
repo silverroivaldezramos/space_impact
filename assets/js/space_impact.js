@@ -16,7 +16,6 @@ let enemy_drone = () => {
         shoot_bullet: null,
         shootBullet: function (){
             let shoot_time = (Math.floor(Math.random() * 4) + 1) * 1000;
-            // console.log(this.x, this.y, shoot_time);
             enemy_bullets.push({x: this.x-30, y:this.y+5});
     
             this.shoot_bullet = setTimeout(() => {
@@ -70,7 +69,7 @@ let MAX_ENEMIES = 10;
 
 /** EVENT LISTENERS */ 
 document.addEventListener("DOMContentLoaded", () => {
-    initializeGame(); 
+    initializeEnemies(); 
 
     gameLoop();
 
@@ -81,30 +80,18 @@ document.addEventListener("DOMContentLoaded", () => {
 /** EVENT HANDLERS: */
 
 function gameLoop(){
-    // moveSpaceshipBullets();
-    // moveEnemyBullets();
-    // moveEnemies();
+    const game_loop = setTimeout(gameLoop, 33);
+
     spaceshipBulletEnemyCollision();
     spaceshipBulletEnemyBulletCollision();
     spaceshipEnemyCollision();
     spaceshipEnemyBulletCollision();
-    displaySpaceship( );
+    displaySpaceship();
     displayEnemies();
-    // displaySpaceshipBullets();
-    // displayEnemyBullets();
     displayBullets(bullets, "right", "bullets");
     displayBullets(enemy_bullets, "left", "enemy_bullets");
-    // /* spaceship bullets */ expectedFunction(bullets_array, direction, element_layer);
-    // /* enemy bullets */ expectedFunction(bullet_type, direction, element_layer);
     displayScore();
-
-    const game_loop = setTimeout(gameLoop, 33);
-
-    if(spaceship.health === 0){
-        clearTimeout(game_loop);
-        alert("Game Over!");
-        location.reload();
-    }
+    checkSpaceshipHealth(game_loop);
 }
 
 function spaceshipControls(){
@@ -160,10 +147,6 @@ function addBumblebeeEnemy(){
     }
 }
 
-function initializeGame(){
-    initializeEnemies();
-}
-
 function displayEnemies(){
     let output = "";
     for(enemy_id = 0; enemy_id < enemies.length; enemy_id++){
@@ -179,95 +162,28 @@ function displayBullets(bullet_array, direction, element_layer){
     let output = "";
     document.getElementById(element_layer).innerHTML = "";
     for(bullet_id = 0; bullet_id < bullet_array.length; bullet_id++){
-        // console.log(bullets_array);
         output += `<div class='${ element_layer }' style='top: ${ bullet_array[bullet_id].y }px; left: ${ bullet_array[bullet_id].x }px;'></div>`;
         if(direction === 'right'){
             bullet_array[bullet_id].x += BULLET_MOVE_SPEED;
+            if(bullet_array[bullet_id].x > 988){ 
+                bullet_array[bullet_id] = bullet_array[bullet_array.length-1];
+                bullet_array.pop();
+            }
         }
         else{
             bullet_array[bullet_id].x -= BULLET_MOVE_SPEED;
+            if(bullet_array[bullet_id].x < -10){
+                bullet_array[bullet_id] = bullet_array[bullet_array.length-1];
+                bullet_array.pop();
+            }
         }
     }
-    // if(bullet_array === 'bullets'){
-    //     for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
-    //         // console.log(bullets_array);
-    //         output += `<div class='${ element_layer }' style='top: ${ bullets[bullet_id].y }px; left: ${ bullets[bullet_id].x }px;'></div>`;
-    //         if(direction === 'right'){
-    //             bullets[bullet_id].x += BULLET_MOVE_SPEED;
-    //         }
-    //         if(bullets[bullet_id].x > 988){ 
-    //             // bullets[bullet_id] = bullets[bullets.length-1];
-    //             // bullets.pop();
-    //             bullets.shift();
-    //         }
-    //     }
-    // }
-    // else{
-    //     for(bullet_id = 0; bullet_id < enemy_bullets.length; bullet_id++){
-    //         // console.log(bullets_array);
-    //         output += `<div class='${ element_layer }' style='top: ${ enemy_bullets[bullet_id].y }px; left: ${ enemy_bullets[bullet_id].x }px;'></div>`;
-    //         if(direction === 'left'){
-    //             enemy_bullets[bullet_id].x -= BULLET_MOVE_SPEED;
-    //         }
-    //         if(enemy_bullets[bullet_id].x < -10){
-    //             enemy_bullets[bullet_id] = enemy_bullets[enemy_bullets.length-1];
-    //             enemy_bullets.pop();
-    //             // enemy_bullets.shift();
-    //         }
-    //     }
-    // }
     document.getElementById(element_layer).innerHTML = output;
 }
-
-// function displaySpaceshipBullets(){
-//     let output = "";
-//     document.getElementById("bullets").innerHTML = "";
-
-//     for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
-//         output += `<div class='bullets' style='top: ${ bullets[bullet_id].y }px; left: ${ bullets[bullet_id].x }px;'></div>`;
-//     }
-
-//     document.getElementById("bullets").innerHTML = output;
-// }
-
-// function displayEnemyBullets(){
-//     let output = "";
-//     document.getElementById("enemy_bullets").innerHTML = "";
-
-//     for(let enemy_bullet_id = 0; enemy_bullet_id < enemy_bullets.length; enemy_bullet_id++){
-//         output += `<div class='enemy_bullets' style='top: ${ enemy_bullets[enemy_bullet_id].y }px; left: ${ enemy_bullets[enemy_bullet_id].x }px;'></div>`;
-//     }
-    
-//     document.getElementById("enemy_bullets").innerHTML = output;
-// }
 
 function displayScore(){
     document.getElementById('score').innerHTML = score;
 }
-
-function moveSpaceshipBullets(){
-    for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
-        bullets[bullet_id].x += BULLET_MOVE_SPEED;
-
-        if(bullets[bullet_id].x > 988){ 
-            // bullets[bullet_id] = bullets[bullets.length-1];
-            // bullets.pop();
-            bullets.shift();
-        }
-    }
-}
-
-function moveEnemyBullets(){
-    for (enemy_bullet_id = 0; enemy_bullet_id < enemy_bullets.length; enemy_bullet_id++){
-        enemy_bullets[enemy_bullet_id].x -= 10;
-
-        if(enemy_bullets[enemy_bullet_id].x < -10){
-            enemy_bullets[enemy_bullet_id] = enemy_bullets[enemy_bullets.length-1];
-            enemy_bullets.pop();
-            // enemy_bullets.shift();
-        }
-    }
-} 
 
 function spaceshipBulletEnemyCollision(){ 
     for(let bullet_id = 0; bullet_id < bullets.length; bullet_id++){ 
@@ -277,17 +193,11 @@ function spaceshipBulletEnemyCollision(){
                 enemies[enemy_id].health = enemies[enemy_id].health - spaceship.bullet_damage;
                 bullets[bullet_id] = bullets[bullets.length-1];
                 bullets.pop();
-                // bullets.splice(bullet_id, 1);
             }
             if (enemies[enemy_id].health === 0){
                 score += enemies[enemy_id].earn_score;
                 enemies[enemy_id] = enemies[enemies.length-1];
                 enemies.pop();
- 
-                // enemies.splice(enemies_id);
-                // clearTimeout(enemies[enemy_id].shoot_bullet); 
-
-                /** Clear timeout for shootBullet */
             }
         }
     } 
@@ -303,10 +213,6 @@ function spaceshipBulletEnemyBulletCollision(){
                 bullets.pop();
                 enemy_bullets[enemy_bullet_id] = enemy_bullets[enemy_bullets.length-1];
                 enemy_bullets.pop();
-                // bullets.splice(bullet_id);
-                // bullets = bullets.filter(Boolean);
-                // enemy_bullets.splice(enemy_bullet_id);
-                // enemy_bullets = enemy_bullets.filter(Boolean);
             }
         }
     }
@@ -320,7 +226,6 @@ function spaceshipEnemyBulletCollision(){
             if (Math.abs(enemy_bullets[enemy_bullet_id].x - spaceship.x) < 50 && Math.abs(enemy_bullets[enemy_bullet_id].y - spaceship.y) < 20){
                 enemy_bullets[enemy_bullet_id] = enemy_bullets[enemy_bullets.length-1];
                 enemy_bullets.pop();
-                // enemy_bullets.splice(enemy_bullet_id);
                 spaceship.y = (Math.random()*500) * -1;
                 spaceship.x = (Math.random()*500) * -1;
                 spaceship.health = spaceship.health - 1;
@@ -336,7 +241,6 @@ function spaceshipEnemyBulletCollision(){
             if (Math.abs(enemy_bullets[enemy_bullet_id].x - spaceship.x) < 50 && Math.abs(enemy_bullets[enemy_bullet_id].y - spaceship.y) < 20){
                 enemy_bullets[enemy_bullet_id] = enemy_bullets[enemy_bullets.length-1];
                 enemy_bullets.pop();
-                // enemy_bullets.splice(enemy_bullet_id);
             }
         }
     }
@@ -363,7 +267,6 @@ function spaceshipEnemyCollision(){
             if (Math.abs(spaceship.x - enemies[enemy_id].x) < 50 && Math.abs(spaceship.y - enemies[enemy_id].y) < 50){
                 enemies[enemy_id] = enemies[enemies.length-1];
                 enemy_bullets.pop();
-                // enemy_bullets.splice(enemy_bullet_id);
             }
         }
     }
@@ -392,4 +295,12 @@ function spaceshipInvulnerable(){
 function spaceshipVulnerable(){
     spaceship.is_invulnerable = 1;
     document.getElementById("spaceship").style.opacity = "1";
+}
+
+function checkSpaceshipHealth(game_loop){
+    if(spaceship.health === 0){
+        clearTimeout(game_loop);
+        alert("Game Over!");
+        location.reload();
+    }
 }
