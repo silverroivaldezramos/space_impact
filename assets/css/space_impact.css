@@ -44,6 +44,16 @@
   height: 40px;
 }
 /* line 48, space_impact.less */
+* body section .bumblebee {
+  background: url("../image/spaceship_sprite.png");
+  background-position: 0px -845px;
+  position: absolute;
+  left: 1000px;
+  top: 00px;
+  width: 65px;
+  height: 40px;
+}
+/* line 58, space_impact.less */
 * body section #lives {
   position: absolute;
   width: 30px;
@@ -51,28 +61,28 @@
   left: 0px;
   top: 750px;
 }
-/* line 55, space_impact.less */
+/* line 65, space_impact.less */
 * body section #lives ul {
   display: flex;
   flex-direction: row;
   list-style: none;
   padding: 0px;
 }
-/* line 61, space_impact.less */
+/* line 71, space_impact.less */
 * body section #lives ul li {
   margin-right: 10px;
 }
-/* line 64, space_impact.less */
+/* line 74, space_impact.less */
 * body section #lives ul li img {
   width: 30px;
 }
-/* line 71, space_impact.less */
+/* line 81, space_impact.less */
 * body section #score {
   position: absolute;
   left: 0px;
   top: 810px;
 }
-/* line 77, space_impact.less */
+/* line 87, space_impact.less */
 * body section .hidden {
   display: none;
 }

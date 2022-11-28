@@ -2,7 +2,8 @@ let spaceship = {
     x: 10,
     y: 280,
     health: 3,
-    bullet_damage: 1
+    bullet_damage: 1,
+    is_invulnerable: 1 // {0: TRUE, 1: FALSE}
 }
 
 let enemy_drone = () => {
@@ -12,17 +13,18 @@ let enemy_drone = () => {
         y:(Math.floor(Math.random() * 700) + 1),
         health: 2,
         earn_score: 100,
+        shoot_bullet: null,
         shootBullet: function (){
             let shoot_time = (Math.floor(Math.random() * 4) + 1) * 1000;
             // console.log(this.x, this.y, shoot_time);
             enemy_bullets.push({x: this.x-30, y:this.y+5});
     
-            const shoot_bullet = setTimeout(() => {
+            this.shoot_bullet = setTimeout(() => {
                 this.shootBullet();
             }, shoot_time);
      
             if(this.health === 0){
-                clearTimeout(shoot_bullet); 
+                clearTimeout(this.shoot_bullet); 
             }
         },
         moveEnemy: function (){
@@ -39,22 +41,16 @@ let enemy_drone = () => {
 let enemy_bumblebee = () => {
     return {
         title: "bumblebee",
-        x:800,
-        y:100,
+        x: (Math.floor(Math.random() * 700) + 1),
+        y: GAME_HEIGHT,
         health: 2,
         earn_score: 100,
-        shootBullet: function (){
-            let shoot_time = (Math.floor(Math.random() * 4) + 1) * 1000;
-            // console.log(this.x, this.y, shoot_time);
-            enemy_bullets.push({x: this.x-30, y:this.y+5});
-
-            const shoot_bullet = setTimeout(() => {
-                this.shootBullet();
-            }, shoot_time);
-
-            if(this.health === 0){
-                clearTimeout(shoot_bullet); 
-            }
+        moveEnemy: function (){
+            let enemy_move_time = (Math.floor(Math.random() * 4) + 1) * 35;
+            this.y -= ENEMIES_SPEED;
+            const move_enemy = setTimeout(() => {
+                this.moveEnemy();
+            }, enemy_move_time);
         }
     }
 }
@@ -89,7 +85,7 @@ function gameLoop(){
     // moveEnemyBullets();
     // moveEnemies();
     spaceshipBulletEnemyCollision();
-    // spaceshipBulletEnemyBulletCollision();
+    spaceshipBulletEnemyBulletCollision();
     spaceshipEnemyCollision();
     spaceshipEnemyBulletCollision();
     displaySpaceship( );
@@ -136,6 +132,7 @@ function displaySpaceship(){
 
 function initializeEnemies(){
     addDroneEnemy();
+    addBumblebeeEnemy();
 }
 
 function addDroneEnemy(){
@@ -151,16 +148,15 @@ function addDroneEnemy(){
     }
 }
 
-function addBumblebeeEnemies(){
+function addBumblebeeEnemy(){
     if(enemies.length < MAX_ENEMIES){
-        let enemy_spawn = enemy_drone();
-        let spawn_drone = (Math.floor(Math.random() * 4) + 1) * 1000;
+        let enemy_spawn = enemy_bumblebee();
+        let spawn_bumblebee = (Math.floor(Math.random() * 4) + 1) * 1000;
         
-        enemy_spawn.y = (Math.floor(Math.random() * 700) + 1);
+        enemy_spawn.x = (Math.floor(Math.random() * 700) + 1);
         enemies.push(enemy_spawn);
-        enemy_spawn.shootBullet();
         enemy_spawn.moveEnemy();
-        setTimeout(addDroneEnemy, spawn_drone);
+        setTimeout(addBumblebeeEnemy, spawn_bumblebee);
     }
 }
 
@@ -271,65 +267,104 @@ function moveEnemyBullets(){
             // enemy_bullets.shift();
         }
     }
-}
+} 
 
-function spaceshipBulletEnemyCollision(){
-    for(let bullet_id = 0; bullet_id < bullets.length; bullet_id++){
-        for(let enemy_id = 0; enemy_id < enemies.length; enemy_id++){
-            if (Math.abs(bullets[bullet_id].x - enemies[enemy_id].x) < 50 && Math.abs(bullets[bullet_id].y - enemies[enemy_id].y) < 20){
+function spaceshipBulletEnemyCollision(){ 
+    for(let bullet_id = 0; bullet_id < bullets.length; bullet_id++){ 
+        for(let enemy_id = 0; enemy_id < enemies.length; enemy_id++){ 
+            if (bullets[bullet_id] && Math.abs(enemies[enemy_id].x - bullets[bullet_id].x) < 50 
+            && Math.abs(enemies[enemy_id].y - bullets[bullet_id].y) < 20){
                 enemies[enemy_id].health = enemies[enemy_id].health - spaceship.bullet_damage;
                 bullets[bullet_id] = bullets[bullets.length-1];
                 bullets.pop();
-                  
-                if (enemies[enemy_id].health === 0){
-                    score += enemies[enemy_id].earn_score;
-                    enemies[enemy_id] = enemies[enemies.length-1];
-                    enemies.pop(); 
-                }
+                // bullets.splice(bullet_id, 1);
+            }
+            if (enemies[enemy_id].health === 0){
+                score += enemies[enemy_id].earn_score;
+                enemies[enemy_id] = enemies[enemies.length-1];
+                enemies.pop();
+ 
+                // enemies.splice(enemies_id);
+                // clearTimeout(enemies[enemy_id].shoot_bullet); 
+
+                /** Clear timeout for shootBullet */
+            }
+        }
+    } 
+}
+ 
+function spaceshipBulletEnemyBulletCollision(){
+    for(let bullet_id = 0; bullet_id < bullets.length; bullet_id++){
+        for(let enemy_bullet_id = 0; enemy_bullet_id < enemy_bullets.length; enemy_bullet_id++){
+            if (bullets[bullet_id] && enemy_bullets[enemy_bullet_id] 
+                && Math.abs(bullets[bullet_id].x - enemy_bullets[enemy_bullet_id].x) < 20 
+                && Math.abs(bullets[bullet_id].y - enemy_bullets[enemy_bullet_id].y) < 20){
+                bullets[bullet_id] = bullets[bullets.length-1];
+                bullets.pop();
+                enemy_bullets[enemy_bullet_id] = enemy_bullets[enemy_bullets.length-1];
+                enemy_bullets.pop();
+                // bullets.splice(bullet_id);
+                // bullets = bullets.filter(Boolean);
+                // enemy_bullets.splice(enemy_bullet_id);
+                // enemy_bullets = enemy_bullets.filter(Boolean);
             }
         }
     }
 }
 
-// function spaceshipBulletEnemyBulletCollision(){
-//     for(let bullet_id = 0; bullet_id < bullets.length; bullet_id++){
-//         for(let enemy_bullet_id = 0; enemy_bullet_id < enemy_bullets.length; enemy_bullet_id++){
-//             if (Math.abs(bullets[bullet_id].x - enemy_bullets[enemy_bullet_id].x) < 20 && Math.abs(bullets[bullet_id].y - enemy_bullets[enemy_bullet_id].y) < 20){
-//                 bullets[bullet_id] = bullets[bullets.length-1];
-//                 bullets.pop();
-//                 enemy_bullets[enemy_bullet_id] = enemy_bullets[bullets.length-1];
-//                 bullets.pop();
-//                 // bullets.splice(bullet_id);
-//                 // enemy_bullets.splice(enemy_bullet_id);
-//             }
-//         }
-//     }
-// }
-
 function spaceshipEnemyBulletCollision(){
     for(let enemy_bullet_id = 0; enemy_bullet_id < enemy_bullets.length; enemy_bullet_id++){
         
-        if (Math.abs(enemy_bullets[enemy_bullet_id].x - spaceship.x) < 50 && Math.abs(enemy_bullets[enemy_bullet_id].y - spaceship.y) < 20){
-            enemy_bullets.splice(enemy_bullet_id);
-            spaceship.y = (Math.random()*500) * -1;
-            spaceship.x = (Math.random()*500) * -1;
-            spaceship.health = spaceship.health - 1;
-            reduceSpaceshipLife();
-            spaceship.y = 280;
-            spaceship.x = 10;   
+        if (spaceship.is_invulnerable === 1){
+            
+            if (Math.abs(enemy_bullets[enemy_bullet_id].x - spaceship.x) < 50 && Math.abs(enemy_bullets[enemy_bullet_id].y - spaceship.y) < 20){
+                enemy_bullets[enemy_bullet_id] = enemy_bullets[enemy_bullets.length-1];
+                enemy_bullets.pop();
+                // enemy_bullets.splice(enemy_bullet_id);
+                spaceship.y = (Math.random()*500) * -1;
+                spaceship.x = (Math.random()*500) * -1;
+                spaceship.health = spaceship.health - 1;
+                reduceSpaceshipLife();
+                spaceship.y = 280;
+                spaceship.x = 10;
+                spaceshipInvulnerable();
+                setTimeout(spaceshipVulnerable, 3000);   
+            }
+        }
+        else{
+
+            if (Math.abs(enemy_bullets[enemy_bullet_id].x - spaceship.x) < 50 && Math.abs(enemy_bullets[enemy_bullet_id].y - spaceship.y) < 20){
+                enemy_bullets[enemy_bullet_id] = enemy_bullets[enemy_bullets.length-1];
+                enemy_bullets.pop();
+                // enemy_bullets.splice(enemy_bullet_id);
+            }
         }
     }
 }
 
 function spaceshipEnemyCollision(){
     for(let enemy_id = 0; enemy_id < enemies.length; enemy_id++){
-        if (Math.abs(spaceship.x - enemies[enemy_id].x) < 50 && Math.abs(spaceship.y - enemies[enemy_id].y) < 50){
-            spaceship.y = 0;
-            spaceship.x = (Math.random()*500) * -1;
-            spaceship.health = spaceship.health - 1;
-            reduceSpaceshipLife();
-            spaceship.y = 280;
-            spaceship.x = 10;
+        
+        if (spaceship.is_invulnerable === 1){
+
+            if (Math.abs(spaceship.x - enemies[enemy_id].x) < 50 && Math.abs(spaceship.y - enemies[enemy_id].y) < 50){
+                spaceship.y = 0;
+                spaceship.x = (Math.random()*500) * -1;
+                spaceship.health = spaceship.health - 1;
+                reduceSpaceshipLife();
+                spaceship.y = 280;
+                spaceship.x = 10;
+                spaceshipInvulnerable();
+                setTimeout(spaceshipVulnerable, 3000);      
+            }
+        }
+        else{
+
+            if (Math.abs(spaceship.x - enemies[enemy_id].x) < 50 && Math.abs(spaceship.y - enemies[enemy_id].y) < 50){
+                enemies[enemy_id] = enemies[enemies.length-1];
+                enemy_bullets.pop();
+                // enemy_bullets.splice(enemy_bullet_id);
+            }
         }
     }
 }
@@ -347,4 +382,14 @@ function moveEnemies(){
             enemies.shift();
         }
     }
+}
+
+function spaceshipInvulnerable(){
+    spaceship.is_invulnerable = 0;
+    document.getElementById("spaceship").style.opacity = "0.5";
+}
+
+function spaceshipVulnerable(){
+    spaceship.is_invulnerable = 1;
+    document.getElementById("spaceship").style.opacity = "1";
 }
