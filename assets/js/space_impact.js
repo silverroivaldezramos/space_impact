@@ -92,8 +92,8 @@ function gameLoop(){
     displayEnemies();
     // displaySpaceshipBullets();
     // displayEnemyBullets();
-    displayBullets("bullets", "right", "bullets");
-    displayBullets("enemy_bullets", "left", "enemy_bullets");
+    displayBullets(bullets, "right", "bullets");
+    displayBullets(enemy_bullets, "left", "enemy_bullets");
     // /* spaceship bullets */ expectedFunction(bullets_array, direction, element_layer);
     // /* enemy bullets */ expectedFunction(bullet_type, direction, element_layer);
     displayScore();
@@ -178,44 +178,44 @@ function displayEnemies(){
 function displayBullets(bullet_array, direction, element_layer){
     let output = "";
     document.getElementById(element_layer).innerHTML = "";
-    // for(bullet_id = 0; bullet_id < bullet_array.length; bullet_id++){
-    //     // console.log(bullets_array);
-    //     output += `<div class='${ element_layer }' style='top: ${ bullet_array[bullet_id].y }px; left: ${ bullet_array[bullet_id].x }px;'></div>`;
-    //     if(direction === 'right'){
-    //         bullet_array[bullet_id].x += BULLET_MOVE_SPEED;
-    //     }
-    //     else{
-    //         bullet_array[bullet_id].x -= BULLET_MOVE_SPEED;
+    for(bullet_id = 0; bullet_id < bullet_array.length; bullet_id++){
+        // console.log(bullets_array);
+        output += `<div class='${ element_layer }' style='top: ${ bullet_array[bullet_id].y }px; left: ${ bullet_array[bullet_id].x }px;'></div>`;
+        if(direction === 'right'){
+            bullet_array[bullet_id].x += BULLET_MOVE_SPEED;
+        }
+        else{
+            bullet_array[bullet_id].x -= BULLET_MOVE_SPEED;
+        }
+    }
+    // if(bullet_array === 'bullets'){
+    //     for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
+    //         // console.log(bullets_array);
+    //         output += `<div class='${ element_layer }' style='top: ${ bullets[bullet_id].y }px; left: ${ bullets[bullet_id].x }px;'></div>`;
+    //         if(direction === 'right'){
+    //             bullets[bullet_id].x += BULLET_MOVE_SPEED;
+    //         }
+    //         if(bullets[bullet_id].x > 988){ 
+    //             // bullets[bullet_id] = bullets[bullets.length-1];
+    //             // bullets.pop();
+    //             bullets.shift();
+    //         }
     //     }
     // }
-    if(bullet_array === 'bullets'){
-        for(bullet_id = 0; bullet_id < bullets.length; bullet_id++){
-            // console.log(bullets_array);
-            output += `<div class='${ element_layer }' style='top: ${ bullets[bullet_id].y }px; left: ${ bullets[bullet_id].x }px;'></div>`;
-            if(direction === 'right'){
-                bullets[bullet_id].x += BULLET_MOVE_SPEED;
-            }
-            if(bullets[bullet_id].x > 988){ 
-                // bullets[bullet_id] = bullets[bullets.length-1];
-                // bullets.pop();
-                bullets.shift();
-            }
-        }
-    }
-    else{
-        for(bullet_id = 0; bullet_id < enemy_bullets.length; bullet_id++){
-            // console.log(bullets_array);
-            output += `<div class='${ element_layer }' style='top: ${ enemy_bullets[bullet_id].y }px; left: ${ enemy_bullets[bullet_id].x }px;'></div>`;
-            if(direction === 'left'){
-                enemy_bullets[bullet_id].x -= BULLET_MOVE_SPEED;
-            }
-            if(enemy_bullets[bullet_id].x < -10){
-                enemy_bullets[bullet_id] = enemy_bullets[enemy_bullets.length-1];
-                enemy_bullets.pop();
-                // enemy_bullets.shift();
-            }
-        }
-    }
+    // else{
+    //     for(bullet_id = 0; bullet_id < enemy_bullets.length; bullet_id++){
+    //         // console.log(bullets_array);
+    //         output += `<div class='${ element_layer }' style='top: ${ enemy_bullets[bullet_id].y }px; left: ${ enemy_bullets[bullet_id].x }px;'></div>`;
+    //         if(direction === 'left'){
+    //             enemy_bullets[bullet_id].x -= BULLET_MOVE_SPEED;
+    //         }
+    //         if(enemy_bullets[bullet_id].x < -10){
+    //             enemy_bullets[bullet_id] = enemy_bullets[enemy_bullets.length-1];
+    //             enemy_bullets.pop();
+    //             // enemy_bullets.shift();
+    //         }
+    //     }
+    // }
     document.getElementById(element_layer).innerHTML = output;
 }
 
